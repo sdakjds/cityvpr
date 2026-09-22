@@ -13,7 +13,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Data (stored on Zenodo, not GitHub)
+# Data (stored on Figshare, not GitHub)
 *.png
 *.zip
 city_vpr_dataset/
