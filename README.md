@@ -93,7 +93,7 @@ Download and install [Project Malmo](https://github.com/Microsoft/malmo) (Minecr
 
 ### 2. Load the CityVPR world save
 
-The Minecraft world save (`100x100map`) is included in this GitHub repository. Paste the `100x100map` save folder into:
+The Minecraft world save (100x100map) is included in this GitHub repository. Paste the `100x100map` save folder into:
 ```
 Malmo\Malmo-0.36.0-Windows-64bit_withBoost_Python3.6\Minecraft\run\saves
 ```
