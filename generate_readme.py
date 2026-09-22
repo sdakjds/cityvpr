@@ -18,12 +18,12 @@ else:
 
 SPEED_MODES = [
     {"id": 1, "name": "speedMode_1", "type": "constant", "move_value": 1.0,
-     "speed_mps": 4.32, "desc": "Constant 4.32 m/s (normal walking)"},
+     "speed_mps": 4.32, "desc": "Constant 4.32 (normal walking)"},
     {"id": 2, "name": "speedMode_2", "type": "constant", "move_value": 0.6,
-     "speed_mps": 2.59, "desc": "Constant 2.59 m/s (slow walking)"},
+     "speed_mps": 2.59, "desc": "Constant 2.59 (slow walking)"},
     {"id": 3, "name": "speedMode_3", "type": "accelerating",
      "speed_start": 2.59, "speed_max": 5.18,
-     "desc": "Accelerating 2.59 to 5.18 m/s"},
+     "desc": "Accelerating 2.59 to 5.18"},
 ]
 
 PITCH_ANGLES = [
@@ -168,7 +168,7 @@ def generate_readme(dataset_root, stats):
     w("")
     w("```")
     w("city_vpr_dataset/")
-    w("├── speedMode_1/          # Constant 4.32 m/s")
+    w("├── speedMode_1/          # Constant 4.32")
     w("│   ├── route1/")
     w("│   │   ├── pitch_0/      # Forward view")
     w("│   │   │   ├── *.png     # Image frames")
@@ -179,8 +179,8 @@ def generate_readme(dataset_root, stats):
     w("│   │   └── pitch_90/")
     w("│   ├── route2/")
     w("│   └── ... (route3 ~ route11)")
-    w("├── speedMode_2/          # Constant 2.59 m/s")
-    w("├── speedMode_3/          # Accelerating 2.59~5.18 m/s")
+    w("├── speedMode_2/          # Constant 2.59")
+    w("├── speedMode_3/          # Accelerating 2.59~5.18")
     w("├── waypoints.json        # 32 waypoint coordinates")
     w("├── routes.json           # 11 route definitions")
     w("├── buildings.json        # 38 building annotations")
@@ -213,10 +213,10 @@ def generate_readme(dataset_root, stats):
     w("|------|------|-------|-------------|")
     for sm in SPEED_MODES:
         if sm['type'] == 'constant':
-            w("| {} | {} | {:.2f} m/s | {} |".format(
+            w("| {} | {} | {:.2f} | {} |".format(
                 sm['name'], sm['type'], sm['speed_mps'], sm['desc']))
         else:
-            w("| {} | {} | {:.2f} ~ {:.2f} m/s | {} |".format(
+            w("| {} | {} | {:.2f} ~ {:.2f} | {} |".format(
                 sm['name'], sm['type'], sm['speed_start'], sm['speed_max'], sm['desc']))
     w("")
 
@@ -255,7 +255,7 @@ def generate_readme(dataset_root, stats):
     w("| z | float | m | Z coordinate (South) |")
     w("| facing | float | deg | Yaw angle (Minecraft convention) |")
     w("| pitch | float | deg | Pitch angle (Minecraft convention) |")
-    w("| speed | float | m/s | Walking speed |")
+    w("| speed | float | blocks/s | Walking speed |")
     w("")
     w("### waypoints.json")
     w("")
@@ -313,16 +313,18 @@ def generate_readme(dataset_root, stats):
     w("If you use this dataset in your research, please cite:")
     w("")
     w("```")
-    w("Chen Z. (2026). CityVPR: A Multi-Pitch Multi-Speed Visual Place Recognition")
-    w("Dataset in Minecraft Urban Environment. Scientific Data. [DOI: TBD]")
+    w("Chen, Zugang. A multi-pitch multi-speed dataset for embodied spatial")
+    w("cognition evaluation in a virtual urban environment. Figshare (2026).")
+    w("https://doi.org/10.6084/m9.figshare.33944731")
     w("```")
     w("")
     w("Also please cite the Malmo platform:")
     w("")
     w("```")
-    w("Johnson M., Hofmann K., Hutton T., Bignell D. (2016). The Malmo Platform")
-    w("for Artificial Intelligence Experimentation. Proc. 25th International Joint")
-    w("Conference on Artificial Intelligence, p. 4246. AAAI Press.")
+    w("Johnson M., Hofmann K., Hutton T., Bignell D. (2016) The Malmo Platform for")
+    w("Artificial Intelligence Experimentation. Proc. 25th International Joint")
+    w("Conference on Artificial Intelligence, Ed. Kambhampati S., p. 4246.")
+    w("AAAI Press, Palo Alto, California USA.")
     w("https://github.com/Microsoft/malmo")
     w("```")
     w("")
