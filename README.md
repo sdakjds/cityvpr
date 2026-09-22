@@ -8,7 +8,7 @@ The full dataset (57,349 frames, ~12.25 GB) is archived on Figshare:
 
 > **DOI:** [10.6084/m9.figshare.33944731](https://doi.org/10.6084/m9.figshare.33944731)
 
-The Minecraft world save (100 x 100 map) is also included in the Figshare deposit. To use it, extract and paste the save folder into:
+The Minecraft world save (100 x 100 map) is available in this GitHub repository. To use it, paste the save folder into:
 ```
 Malmo\Malmo-0.36.0-Windows-64bit_withBoost_Python3.6\Minecraft\run\saves
 ```
@@ -85,7 +85,7 @@ py -3.6 check_data_quality.py "D:\path\to\city_vpr_dataset"
 
 ## Custom Data Collection
 
-To collect your own custom routes using this codebase, follow these steps:
+To collect your own data using this codebase, modify `multi_pitch_collector.py` and run it with the Malmo environment.
 
 ### 1. Install Project Malmo
 
@@ -93,69 +93,124 @@ Download and install [Project Malmo](https://github.com/Microsoft/malmo) (Minecr
 
 ### 2. Load the CityVPR world save
 
-Download the world save from this GitHub repository and paste it into:
+The Minecraft world save (`100x100map`) is included in this GitHub repository. Paste the `100x100map` save folder into:
 ```
 Malmo\Malmo-0.36.0-Windows-64bit_withBoost_Python3.6\Minecraft\run\saves
 ```
-The city includes 32 predefined waypoints (W0–W31). See `waypoints.json` for coordinates.
 
-### 3. Define custom routes
-
-Edit `generate_routes.py` to define your own routes using the existing 32 waypoints:
+The city includes 32 predefined waypoints (W0–W31). Their coordinates are defined in the `WAYPOINTS` list in `multi_pitch_collector.py`:
 
 ```python
-# In generate_routes.py, modify the ROUTES list:
-ROUTES = [
-    {"name": "route12", "waypoints": ["W0", "W5", "W10", "W15"]},   # your route
-    {"name": "route13", "waypoints": ["W2", "W8", "W12", "W20"]},   # your route
-    # ... add your routes
+WAYPOINTS = [
+    (41, 63), (57, 63), (68, 63), (79, 63), (26, 63),
+    (34, 82), (41, 82), (45, 82), (57, 82), (68, 82),
+    (79, 82), (79, 90), (78, 98), (34, 102), (45, 102),
+    (57, 102), (68, 102), (76, 102), (87, 102), (34, 112),
+    (67, 113), (30, 116), (57, 123), (14, 57), (14, 82),
+    (14, 115), (87, 89), (90, 89), (90, 63), (5, 142),
+    (68, 141), (87, 141),
 ]
 ```
 
-Run it to generate `routes.json`:
+The `GRAPH` dictionary in the same file defines the connectivity between waypoints for reference when designing routes. The agent navigates directly between consecutive waypoints in each route, so any sequence of valid indices can be used.
 
-```bash
-py -3.6 generate_routes.py
-```
+### 3. Define custom routes
 
-### 4. Configure collection parameters
-
-In `multi_pitch_collector.py`, modify these parameters as needed:
+In `multi_pitch_collector.py`, edit the `ROUTES` list to add your own routes. Each route is a list of waypoint indices (0-based) that the agent will visit sequentially:
 
 ```python
-# Speed modes
-SPEED_MODES = {
-    1: {"type": "constant", "speed": 4.32},
-    2: {"type": "constant", "speed": 2.59},
-    3: {"type": "accelerate", "start": 2.59, "end": 5.18},
-}
-
-# Pitch angles (degrees)
-PITCH_ANGLES = [0, 30, 60, 90]
-
-# Image settings
-IMAGE_WIDTH = 1280
-IMAGE_HEIGHT = 720
-FRAME_RATE = 10  # fps
+ROUTES = [
+    [1, 8, 10, 11, 12, 17, 20, 22],   # route1 (original)
+    [21, 19, 13, 5, 7, 8, 15, 22],    # route2 (original)
+    # ... existing routes 3-11 ...
+    # Add your own:
+    [0, 6, 5, 13, 15, 22],            # custom route12
+    [4, 0, 1, 2, 3, 10, 11],          # custom route13
+]
+ROUTE_NAMES = ["route1", "route2", ..., "route11", "route12", "route13"]
 ```
 
-### 5. Run collection
+The script automatically validates that all waypoint indices are in range (0–31) at startup.
+
+### 4. Configure speed modes and pitch angles (optional)
+
+The default configuration defines 3 speed modes and 4 pitch angles. Modify `SPEED_MODES` and `PITCH_ANGLES` in `multi_pitch_collector.py` to customize:
+
+```python
+BASE_WALK_SPEED = 4.317  # Minecraft base walking speed (blocks/sec at move=1.0)
+
+SPEED_MODES = [
+    {'id': 1, 'name': 'speedMode_1', 'type': 'constant', 'base_speed': 1.0, 'desc': 'constant 1.0'},
+    {'id': 2, 'name': 'speedMode_2', 'type': 'constant', 'base_speed': 0.6, 'desc': 'constant 0.6'},
+    {'id': 3, 'name': 'speedMode_3', 'type': 'accel', 'base_speed': 0.6, 'increment': 0.2, 'max_speed': 1.2, 'desc': '0.6 start +0.2 max 1.2'},
+]
+
+PITCH_ANGLES = [
+    {'name': '90', 'mc_pitch': 90, 'desc': 'straight down'},
+    {'name': '60', 'mc_pitch': 60, 'desc': '60 degrees downward'},
+    {'name': '30', 'mc_pitch': 30, 'desc': '30 degrees downward'},
+    {'name': '0',  'mc_pitch': 0,  'desc': 'forward'},
+]
+
+CAPTURE_INTERVAL = 0.1   # 10 fps
+# Resolution is set in Mission XML: 1280 x 720
+```
+
+- `base_speed` is the Malmo `move` command value. Actual speed = `base_speed * BASE_WALK_SPEED`.
+- For `accel` type, speed increases by `increment` at each waypoint passed, up to `max_speed`.
+- Speeds above 1.0 automatically apply speed potions via `/effect` commands.
+
+### 5. Configure output directory (optional)
+
+By default, frames are saved to `city_vpr_dataset/` in the following structure:
+
+```
+city_vpr_dataset/
+  └── speedMode_X/
+      └── routeY/
+          └── pitch_Z/
+              ├── rY_pitchZ_1.png
+              ├── rY_pitchZ_2.png
+              ├── ...
+              └── record.txt
+```
+
+To change the output root, modify `FRAME_ROOT` in `multi_pitch_collector.py`:
+
+```python
+FRAME_ROOT = "city_vpr_dataset"
+```
+
+### 6. Run collection
+
+Full collection (all routes x pitch angles x speed modes):
 
 ```bash
 py -3.6 multi_pitch_collector.py
 ```
 
-This will generate data in the same directory structure as the original dataset.
-
-### 6. Post-processing
-
-After collection, run the same processing scripts:
+Test a single task (route and speed are 1-indexed, pitch is the angle value):
 
 ```bash
-py -3.6 record_to_csv.py "your_output_directory"
-py -3.6 generate_metadata.py "your_output_directory"
-py -3.6 generate_readme.py "your_output_directory"
-py -3.6 check_data_quality.py "your_output_directory"
+py -3.6 multi_pitch_collector.py --test route=1 speed=1 pitch=0
+```
+
+The script automatically:
+- Enables cheats in the world save (for `/tp` and `/effect` commands)
+- Teleports the agent to the starting waypoint with correct yaw and pitch
+- Navigates between waypoints using a turn-then-move state machine
+- Captures frames at 10 fps using a background save thread
+- Records timestamp, XYZ, yaw, pitch, and speed to `record.txt`
+
+### 7. Post-processing
+
+After collection, run the processing scripts on the output directory:
+
+```bash
+py -3.6 record_to_csv.py "city_vpr_dataset"
+py -3.6 generate_metadata.py "city_vpr_dataset"
+py -3.6 generate_readme.py "city_vpr_dataset"
+py -3.6 check_data_quality.py "city_vpr_dataset"
 ```
 
 ## Dataset Structure
@@ -217,20 +272,12 @@ Chen, Zugang. A multi-pitch multi-speed dataset for embodied spatial cognition e
 
 Also cite the Malmo platform:
 
-```bibtex
-@inproceedings{johnson2016malmo,
-  title={The Malmo Platform for Artificial Intelligence Experimentation},
-  author={Johnson, Matthew and Hofmann, Katja and Hutton, Tim and Bignell, David},
-  booktitle={Proc. 25th International Joint Conference on Artificial Intelligence},
-  pages={4246},
-  year={2016},
-  publisher={AAAI Press}
-}
+```
+Johnson M., Hofmann K., Hutton T., Bignell D. (2016) The Malmo Platform for Artificial Intelligence Experimentation. Proc. 25th International Joint Conference on Artificial Intelligence, Ed. Kambhampati S., p. 4246. AAAI Press, Palo Alto, California USA. https://github.com/Microsoft/malmo
 ```
 
 ## License
 
-- **Code**: [MIT License](LICENSE)
 - **Dataset**: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## Contact
