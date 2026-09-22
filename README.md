@@ -93,7 +93,7 @@ Download and install [Project Malmo](https://github.com/Microsoft/malmo) (Minecr
 
 ### 2. Load the CityVPR world save
 
-The Minecraft world save (100x100map) is included in this GitHub repository. Paste the `100x100map` save folder into:
+The Minecraft world save (100x100map) is included in this GitHub repository. Unzip and paste the `100x100map` save folder into:
 ```
 Malmo\Malmo-0.36.0-Windows-64bit_withBoost_Python3.6\Minecraft\run\saves
 ```
@@ -286,5 +286,5 @@ Johnson M., Hofmann K., Hutton T., Bignell D. (2016) The Malmo Platform for Arti
 - Aerospace Information Research Institute, Chinese Academy of Sciences
 - Email: chenzg@aircas.ac.cn
 - **Shijie Guo** 
-- Aerospace Information Research Institute, Chinese Academy of Sciences
+- Zhengzhou University
 - Email: sjguo@gs.zzu.edu.cn
