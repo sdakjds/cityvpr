@@ -282,6 +282,9 @@ Johnson M., Hofmann K., Hutton T., Bignell D. (2016) The Malmo Platform for Arti
 
 ## Contact
 
-- **Zugang Chen** (Corresponding Author)
+- **Zugang Chen** 
 - Aerospace Information Research Institute, Chinese Academy of Sciences
-- Email: 15039802183@163.com
+- Email: chenzg@aircas.ac.cn
+- **Shijie Guo** 
+- Aerospace Information Research Institute, Chinese Academy of Sciences
+- Email: sjguo@gs.zzu.edu.cn
