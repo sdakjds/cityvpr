@@ -267,7 +267,7 @@ Data Collection Platform:
 If you use this dataset or code in your research, please cite:
 
 ```
-Chen, Zugang. A multi-pitch multi-speed dataset for embodied spatial cognition evaluation in a virtual urban environment. Figshare (2026). https://doi.org/10.6084/m9.figshare.33944731
+Zugang Chen, Shijie Guo (2026) A multi-pitch multi-speed dataset for embodied spatial cognition evaluation in a virtual urban environment. Figshare. `https://doi.org/10.6084/m9.figshare.33944731`
 ```
 
 Also cite the Malmo platform:
